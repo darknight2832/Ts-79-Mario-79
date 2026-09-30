@@ -74,7 +74,7 @@ class Level(tools.State):
     # Function to load the map data from a JSON file
     def load_map(self):
         map_file = 'level_' + str(self.game_info[c.LEVEL_NUM]) + '.json'
-        file_path = os.path.join('source', 'data', 'maps', map_file)
+        file_path = os.path.join(setup.PROJECT_ROOT, 'source', 'data', 'maps', map_file)
         f = open(file_path)
         self.map_data = json.load(f)
         f.close()
@@ -602,8 +602,11 @@ class Level(tools.State):
         elif self.player.dead:
             self.next = c.LOAD_SCREEN
         else:
-            self.game_info[c.LEVEL_NUM] += 1
-            self.next = c.LOAD_SCREEN
+            if self.game_info[c.LEVEL_NUM] >= c.LEVEL_COUNT:
+                self.next = c.GAME_COMPLETE
+            else:
+                self.game_info[c.LEVEL_NUM] += 1
+                self.next = c.LOAD_SCREEN
 
     def update_viewport(self):
         third = self.viewport.x + self.viewport.w//3
@@ -622,6 +625,8 @@ class Level(tools.State):
         
     def update_score(self, score, sprite, coin_num=0):
         self.game_info[c.SCORE] += score
+        self.game_info[c.TOP_SCORE] = max(
+            self.game_info[c.TOP_SCORE], self.game_info[c.SCORE])
         self.game_info[c.COIN_TOTAL] += coin_num
         x = sprite.rect.x
         y = sprite.rect.y - 10

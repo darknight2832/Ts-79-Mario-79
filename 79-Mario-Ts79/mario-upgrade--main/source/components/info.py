@@ -103,6 +103,8 @@ class Info():
             self.create_level_labels()
         elif self.state == c.GAME_OVER:
             self.create_game_over_labels()
+        elif self.state == c.GAME_COMPLETE:
+            self.create_game_complete_labels()
         elif self.state == c.TIME_OUT:
             self.create_time_out_labels()
 
@@ -125,13 +127,13 @@ class Info():
         mario_game = []
         luigi_game = []
         top = []
-        top_score = []
+        self.top_score_text = []
 
         self.create_label(mario_game, c.PLAYER1, 272, 360)
         self.create_label(luigi_game, c.PLAYER2, 272, 405)
         self.create_label(top, 'TOP - ', 290, 465)
-        self.create_label(top_score, '000000', 400, 465)
-        self.state_labels = [mario_game, luigi_game, top, top_score,
+        self.create_label(self.top_score_text, '000000', 400, 465)
+        self.state_labels = [mario_game, luigi_game, top, self.top_score_text,
                             *self.info_labels]
     
     def create_load_screen_labels(self):
@@ -145,7 +147,7 @@ class Info():
 
     def create_level_labels(self):
         self.time = c.GAME_TIME_OUT
-        self.current_time = 0
+        self.current_time = self.game_info[c.CURRENT_TIME]
 
         self.clock_time_label = []
         self.create_label(self.clock_time_label, str(self.time), 645, 55)
@@ -159,6 +161,11 @@ class Info():
         self.create_label(over_label, 'OVER', 400, 300)
         
         self.state_labels = [game_label, over_label, *self.info_labels]
+
+    def create_game_complete_labels(self):
+        complete_label = []
+        self.create_label(complete_label, 'YOU WIN', 320, 300)
+        self.state_labels = [complete_label, *self.info_labels]
 
     def create_time_out_labels(self):
         timeout_label = []
@@ -188,17 +195,28 @@ class Info():
         self.update_text(self.coin_count_text, level_info[c.COIN_TOTAL])
         self.update_text(self.stage_label, level_info[c.LEVEL_NUM])
         self.flashing_coin.update(level_info[c.CURRENT_TIME])
+        if self.state == c.MAIN_MENU:
+            self.update_text(self.top_score_text, level_info[c.TOP_SCORE])
         if self.state == c.LOAD_SCREEN:
             self.update_text(self.stage_label2, level_info[c.LEVEL_NUM])
         if self.state == c.LEVEL:
-            if (level_info[c.CURRENT_TIME] - self.current_time) > 1000:
-                self.current_time = level_info[c.CURRENT_TIME]
-                self.time -= 1
+            elapsed = level_info[c.CURRENT_TIME] - self.current_time
+            elapsed_seconds = int(elapsed // 1000)
+            if elapsed_seconds > 0:
+                self.current_time += elapsed_seconds * 1000
+                self.time = max(0, self.time - elapsed_seconds)
                 self.update_text(self.clock_time_label, self.time, True)
     
     def update_text(self, text, score, reset=False):
-        if reset and len(text) > len(str(score)):
-            text.remove(text[0])
+        while len(text) < len(str(score)):
+            character = Character(self.image_dict['0'])
+            character.rect.x = text[0].rect.x - text[0].rect.width - 3
+            character.rect.y = text[0].rect.y
+            text.insert(0, character)
+
+        if reset:
+            while len(text) > len(str(score)):
+                text.pop(0)
         index = len(text) - 1
         for digit in reversed(str(score)):
             rect = text[index].rect
