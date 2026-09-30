@@ -49,6 +49,14 @@ On macOS or Linux, activate the environment with:
 source .venv/bin/activate
 ```
 
+## Tests
+
+Run the regression suite from the project root:
+
+```bash
+python -m unittest discover -s tests
+```
+
 ## Project layout
 
 ```text
@@ -57,6 +65,7 @@ source/main.py          Game state setup and launch
 source/states/          Main menu, level, and transition screens
 source/components/      Player, enemies, power-ups, blocks, and HUD
 source/data/            Player and level data
+tests/                  Gameplay regression tests
 resources/graphics/     Sprite and background assets
 resources/demo/         Level preview images
 images/                 README screenshots
