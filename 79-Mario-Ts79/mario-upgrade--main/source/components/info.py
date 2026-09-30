@@ -125,13 +125,13 @@ class Info():
         mario_game = []
         luigi_game = []
         top = []
-        top_score = []
+        self.top_score_text = []
 
         self.create_label(mario_game, c.PLAYER1, 272, 360)
         self.create_label(luigi_game, c.PLAYER2, 272, 405)
         self.create_label(top, 'TOP - ', 290, 465)
-        self.create_label(top_score, '000000', 400, 465)
-        self.state_labels = [mario_game, luigi_game, top, top_score,
+        self.create_label(self.top_score_text, '000000', 400, 465)
+        self.state_labels = [mario_game, luigi_game, top, self.top_score_text,
                             *self.info_labels]
     
     def create_load_screen_labels(self):
@@ -188,6 +188,8 @@ class Info():
         self.update_text(self.coin_count_text, level_info[c.COIN_TOTAL])
         self.update_text(self.stage_label, level_info[c.LEVEL_NUM])
         self.flashing_coin.update(level_info[c.CURRENT_TIME])
+        if self.state == c.MAIN_MENU:
+            self.update_text(self.top_score_text, level_info[c.TOP_SCORE])
         if self.state == c.LOAD_SCREEN:
             self.update_text(self.stage_label2, level_info[c.LEVEL_NUM])
         if self.state == c.LEVEL:

@@ -622,6 +622,8 @@ class Level(tools.State):
         
     def update_score(self, score, sprite, coin_num=0):
         self.game_info[c.SCORE] += score
+        self.game_info[c.TOP_SCORE] = max(
+            self.game_info[c.TOP_SCORE], self.game_info[c.SCORE])
         self.game_info[c.COIN_TOTAL] += coin_num
         x = sprite.rect.x
         y = sprite.rect.y - 10
