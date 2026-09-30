@@ -615,9 +615,12 @@ class Level(tools.State):
         if (self.player.x_vel > 0 and 
             player_center >= third and
             self.viewport.right < self.end_x):
-            self.viewport.x += round(self.player.x_vel)
+            max_viewport_x = max(self.start_x, self.end_x - self.viewport.w)
+            self.viewport.x = min(
+                self.viewport.x + round(self.player.x_vel), max_viewport_x)
         elif self.player.x_vel < 0 and self.viewport.x > self.start_x:
-            self.viewport.x += round(self.player.x_vel)
+            self.viewport.x = max(
+                self.start_x, self.viewport.x + round(self.player.x_vel))
     
     def move_to_dying_group(self, group, sprite):
         group.remove(sprite)
