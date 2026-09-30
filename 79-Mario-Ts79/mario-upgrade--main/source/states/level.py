@@ -602,8 +602,11 @@ class Level(tools.State):
         elif self.player.dead:
             self.next = c.LOAD_SCREEN
         else:
-            self.game_info[c.LEVEL_NUM] += 1
-            self.next = c.LOAD_SCREEN
+            if self.game_info[c.LEVEL_NUM] >= c.LEVEL_COUNT:
+                self.next = c.GAME_COMPLETE
+            else:
+                self.game_info[c.LEVEL_NUM] += 1
+                self.next = c.LOAD_SCREEN
 
     def update_viewport(self):
         third = self.viewport.x + self.viewport.w//3
