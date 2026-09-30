@@ -41,6 +41,7 @@ def main():
         c.LOAD_SCREEN: load_screen.LoadScreen(),
         c.LEVEL: level.Level(),
         c.GAME_OVER: load_screen.GameOver(),
+        c.GAME_COMPLETE: load_screen.GameComplete(),
         c.TIME_OUT: load_screen.TimeOut()
     }
 
