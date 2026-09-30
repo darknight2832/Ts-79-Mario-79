@@ -145,7 +145,7 @@ class Info():
 
     def create_level_labels(self):
         self.time = c.GAME_TIME_OUT
-        self.current_time = 0
+        self.current_time = self.game_info[c.CURRENT_TIME]
 
         self.clock_time_label = []
         self.create_label(self.clock_time_label, str(self.time), 645, 55)
@@ -191,14 +191,17 @@ class Info():
         if self.state == c.LOAD_SCREEN:
             self.update_text(self.stage_label2, level_info[c.LEVEL_NUM])
         if self.state == c.LEVEL:
-            if (level_info[c.CURRENT_TIME] - self.current_time) > 1000:
-                self.current_time = level_info[c.CURRENT_TIME]
-                self.time -= 1
+            elapsed = level_info[c.CURRENT_TIME] - self.current_time
+            elapsed_seconds = int(elapsed // 1000)
+            if elapsed_seconds > 0:
+                self.current_time += elapsed_seconds * 1000
+                self.time = max(0, self.time - elapsed_seconds)
                 self.update_text(self.clock_time_label, self.time, True)
     
     def update_text(self, text, score, reset=False):
-        if reset and len(text) > len(str(score)):
-            text.remove(text[0])
+        if reset:
+            while len(text) > len(str(score)):
+                text.pop(0)
         index = len(text) - 1
         for digit in reversed(str(score)):
             rect = text[index].rect
