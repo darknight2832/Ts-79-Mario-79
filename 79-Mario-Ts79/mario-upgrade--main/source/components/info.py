@@ -197,6 +197,12 @@ class Info():
                 self.update_text(self.clock_time_label, self.time, True)
     
     def update_text(self, text, score, reset=False):
+        while len(text) < len(str(score)):
+            character = Character(self.image_dict['0'])
+            character.rect.x = text[0].rect.x - text[0].rect.width - 3
+            character.rect.y = text[0].rect.y
+            text.insert(0, character)
+
         if reset and len(text) > len(str(score)):
             text.remove(text[0])
         index = len(text) - 1
