@@ -256,8 +256,7 @@ class Level(tools.State):
             self.check_checkpoints()
             self.update_viewport()
             self.overhead_info.update(self.game_info, self.player)
-            for score in self.moving_score_list:
-                score.update(self.moving_score_list)
+            self.update_moving_scores()
         else:
             self.player.update(keys, self.game_info, self.powerup_group)
             self.flagpole_group.update()
@@ -276,8 +275,11 @@ class Level(tools.State):
             self.check_for_player_death()
             self.update_viewport()
             self.overhead_info.update(self.game_info, self.player)
-            for score in self.moving_score_list:
-                score.update(self.moving_score_list)
+            self.update_moving_scores()
+
+    def update_moving_scores(self):
+        for score in self.moving_score_list.copy():
+            score.update(self.moving_score_list)
     
     def check_checkpoints(self):
         checkpoint = pg.sprite.spritecollideany(self.player, self.checkpoint_group)
