@@ -75,9 +75,8 @@ class Level(tools.State):
     def load_map(self):
         map_file = 'level_' + str(self.game_info[c.LEVEL_NUM]) + '.json'
         file_path = os.path.join(setup.PROJECT_ROOT, 'source', 'data', 'maps', map_file)
-        f = open(file_path)
-        self.map_data = json.load(f)
-        f.close()
+        with open(file_path) as data_file:
+            self.map_data = json.load(data_file)
     
     # Function to set up the level background
     def setup_background(self):
