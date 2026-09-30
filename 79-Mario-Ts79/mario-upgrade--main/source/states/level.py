@@ -74,7 +74,7 @@ class Level(tools.State):
     # Function to load the map data from a JSON file
     def load_map(self):
         map_file = 'level_' + str(self.game_info[c.LEVEL_NUM]) + '.json'
-        file_path = os.path.join('source', 'data', 'maps', map_file)
+        file_path = os.path.join(setup.PROJECT_ROOT, 'source', 'data', 'maps', map_file)
         f = open(file_path)
         self.map_data = json.load(f)
         f.close()
