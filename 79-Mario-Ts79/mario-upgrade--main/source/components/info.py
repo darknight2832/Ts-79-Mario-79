@@ -103,6 +103,8 @@ class Info():
             self.create_level_labels()
         elif self.state == c.GAME_OVER:
             self.create_game_over_labels()
+        elif self.state == c.GAME_COMPLETE:
+            self.create_game_complete_labels()
         elif self.state == c.TIME_OUT:
             self.create_time_out_labels()
 
@@ -159,6 +161,11 @@ class Info():
         self.create_label(over_label, 'OVER', 400, 300)
         
         self.state_labels = [game_label, over_label, *self.info_labels]
+
+    def create_game_complete_labels(self):
+        complete_label = []
+        self.create_label(complete_label, 'YOU WIN', 320, 300)
+        self.state_labels = [complete_label, *self.info_labels]
 
     def create_time_out_labels(self):
         timeout_label = []

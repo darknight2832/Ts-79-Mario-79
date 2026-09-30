@@ -63,12 +63,14 @@ BACKGROUND_MULTIPLER = 2.679
 GROUND_HEIGHT = SCREEN_HEIGHT - 62
 
 GAME_TIME_OUT = 301
+LEVEL_COUNT = 4
 
 #STATES FOR ENTIRE GAME
 MAIN_MENU = 'main menu'
 LOAD_SCREEN = 'load screen'
 TIME_OUT = 'time out'
 GAME_OVER = 'you are loser aymen uss'
+GAME_COMPLETE = 'game complete'
 LEVEL = 'level'
 
 #MAIN MENU CURSOR STATES
