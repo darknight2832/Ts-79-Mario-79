@@ -74,10 +74,9 @@ class Level(tools.State):
     # Function to load the map data from a JSON file
     def load_map(self):
         map_file = 'level_' + str(self.game_info[c.LEVEL_NUM]) + '.json'
-        file_path = os.path.join('source', 'data', 'maps', map_file)
-        f = open(file_path)
-        self.map_data = json.load(f)
-        f.close()
+        file_path = os.path.join(setup.PROJECT_ROOT, 'source', 'data', 'maps', map_file)
+        with open(file_path) as data_file:
+            self.map_data = json.load(data_file)
     
     # Function to set up the level background
     def setup_background(self):
@@ -257,8 +256,7 @@ class Level(tools.State):
             self.check_checkpoints()
             self.update_viewport()
             self.overhead_info.update(self.game_info, self.player)
-            for score in self.moving_score_list:
-                score.update(self.moving_score_list)
+            self.update_moving_scores()
         else:
             self.player.update(keys, self.game_info, self.powerup_group)
             self.flagpole_group.update()
@@ -277,8 +275,11 @@ class Level(tools.State):
             self.check_for_player_death()
             self.update_viewport()
             self.overhead_info.update(self.game_info, self.player)
-            for score in self.moving_score_list:
-                score.update(self.moving_score_list)
+            self.update_moving_scores()
+
+    def update_moving_scores(self):
+        for score in self.moving_score_list.copy():
+            score.update(self.moving_score_list)
     
     def check_checkpoints(self):
         checkpoint = pg.sprite.spritecollideany(self.player, self.checkpoint_group)
@@ -602,8 +603,11 @@ class Level(tools.State):
         elif self.player.dead:
             self.next = c.LOAD_SCREEN
         else:
-            self.game_info[c.LEVEL_NUM] += 1
-            self.next = c.LOAD_SCREEN
+            if self.game_info[c.LEVEL_NUM] >= c.LEVEL_COUNT:
+                self.next = c.GAME_COMPLETE
+            else:
+                self.game_info[c.LEVEL_NUM] += 1
+                self.next = c.LOAD_SCREEN
 
     def update_viewport(self):
         third = self.viewport.x + self.viewport.w//3
@@ -612,9 +616,12 @@ class Level(tools.State):
         if (self.player.x_vel > 0 and 
             player_center >= third and
             self.viewport.right < self.end_x):
-            self.viewport.x += round(self.player.x_vel)
+            max_viewport_x = max(self.start_x, self.end_x - self.viewport.w)
+            self.viewport.x = min(
+                self.viewport.x + round(self.player.x_vel), max_viewport_x)
         elif self.player.x_vel < 0 and self.viewport.x > self.start_x:
-            self.viewport.x += round(self.player.x_vel)
+            self.viewport.x = max(
+                self.start_x, self.viewport.x + round(self.player.x_vel))
     
     def move_to_dying_group(self, group, sprite):
         group.remove(sprite)
@@ -622,6 +629,8 @@ class Level(tools.State):
         
     def update_score(self, score, sprite, coin_num=0):
         self.game_info[c.SCORE] += score
+        self.game_info[c.TOP_SCORE] = max(
+            self.game_info[c.TOP_SCORE], self.game_info[c.SCORE])
         self.game_info[c.COIN_TOTAL] += coin_num
         x = sprite.rect.x
         y = sprite.rect.y - 10
