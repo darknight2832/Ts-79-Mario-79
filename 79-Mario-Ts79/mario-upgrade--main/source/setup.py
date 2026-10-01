@@ -29,6 +29,7 @@ import pygame as pg
 from . import constants as c
 from . import tools
 
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Initialize pygame
 pg.init()
@@ -46,4 +47,4 @@ SCREEN = pg.display.set_mode(c.SCREEN_SIZE)
 SCREEN_RECT = SCREEN.get_rect()
 
 # Load all the graphics from the specified directory
-GFX = tools.load_all_gfx(os.path.join("resources", "graphics"))
+GFX = tools.load_all_gfx(os.path.join(PROJECT_ROOT, "resources", "graphics"))
