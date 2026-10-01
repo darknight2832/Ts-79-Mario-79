@@ -87,6 +87,13 @@ class GameOver(LoadScreen):
         # Override the info state to be displayed after GameOver
         return c.GAME_OVER
 
+class GameComplete(LoadScreen):
+    def set_next_state(self):
+        return c.MAIN_MENU
+
+    def set_info_state(self):
+        return c.GAME_COMPLETE
+
 class TimeOut(LoadScreen):
     def __init__(self):
         super().__init__()

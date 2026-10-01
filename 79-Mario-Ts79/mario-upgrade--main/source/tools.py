@@ -98,7 +98,9 @@ class Control():
     def event_loop(self):
         # Handle events
         for event in pg.event.get():
-            if event.type == pg.QUIT:
+            if event.type == pg.QUIT or (
+                event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE
+            ):
                 self.done = True
             elif event.type == pg.KEYDOWN:
                 self.keys = pg.key.get_pressed()
